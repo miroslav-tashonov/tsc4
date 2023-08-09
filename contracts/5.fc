@@ -40,25 +40,11 @@
     return  fiboonacci_tuple;
   }
 
-  if(k < 0){
-    return  fiboonacci_tuple;
-  }
-
-  if(k > 255){
-    return  fiboonacci_tuple;
-  }
-
-  if(n < 0){
-    return  fiboonacci_tuple;
-  }
-
-  if(n > 370){
-    return  fiboonacci_tuple;
-  }
-
-  if(n + k > 370){
-    return  fiboonacci_tuple;
-  }
+  throw_if(5, k < 0);
+  throw_if(5, k > 255);
+  throw_if(5, n < 0);
+  throw_if(5, n > 370);
+  throw_if(5, (n + k) > 370);
 
   int iteration = 0;
   repeat(k) {
