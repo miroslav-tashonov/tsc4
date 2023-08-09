@@ -18,6 +18,28 @@
 
 ;; testable
 (tuple) fibonacci_sequence (int n, int k) method_id {
-  return null();
+  tuple deTuple = unsafe_tuple([]);
+  Fibonacci(n + k, n + k, n, deTuple);
+  return deTuple;
+}
+
+int Fibonacci(int n, int final_number, int k, tuple deTuple)
+{
+    if (n == 0){
+      return 0;
+    }
+    else if (n == 1){
+      return 1;
+    }
+    else
+    {
+        int number = Fibonacci(n - 1, final_number, k, deTuple) + Fibonacci(n - 2, final_number, k, deTuple)
+        if(n >= final_number - k)
+        {
+          deTuple~tpush(number);
+        }
+
+        return number;
+    }
 }
 
