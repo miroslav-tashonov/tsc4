@@ -37,7 +37,7 @@
 (tuple) fibonacci_sequence (int n, int k) method_id {
   var fiboonacci_tuple = empty_tuple();
   if(k == 0){
-    return null();
+    return empty_tuple();
   }
   
   int iteration = 0;
