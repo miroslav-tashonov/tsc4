@@ -40,6 +40,18 @@
     return  fiboonacci_tuple;
   }
 
+  if(k > 255){
+    return  fiboonacci_tuple;
+  }
+
+  if(n > 370){
+    return  fiboonacci_tuple;
+  }
+
+  if(n + k > 370){
+    return  fiboonacci_tuple;
+  }
+
   int iteration = 0;
   repeat(k) {
      (int fibonacciNumber, _) = findNthFibonacciNumber(n + iteration);
