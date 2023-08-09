@@ -37,15 +37,9 @@
 (tuple) fibonacci_sequence (int n, int k) method_id {
   var fiboonacci_tuple = empty_tuple();
   if(k == 0){
-    return  fiboonacci_tuple;
+    return null();
   }
-
-  throw_if(5, k < 0);
-  throw_if(5, k > 255);
-  throw_if(5, n < 0);
-  throw_if(5, n > 370);
-  throw_if(5, (n + k) > 370);
-
+  
   int iteration = 0;
   repeat(k) {
      (int fibonacciNumber, _) = findNthFibonacciNumber(n + iteration);
