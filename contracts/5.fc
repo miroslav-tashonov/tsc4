@@ -40,7 +40,15 @@
     return  fiboonacci_tuple;
   }
 
+  if(k < 0){
+    return  fiboonacci_tuple;
+  }
+
   if(k > 255){
+    return  fiboonacci_tuple;
+  }
+
+  if(n < 0){
     return  fiboonacci_tuple;
   }
 
