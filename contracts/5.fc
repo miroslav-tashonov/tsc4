@@ -35,7 +35,7 @@
 
 ;; testable
 (tuple) fibonacci_sequence (int n, int k) method_id {
-  var fiboonacci_tuple = unsafe_tuple([]);
+  var fiboonacci_tuple = empty_tuple();
   if(k == 0){
     return  fiboonacci_tuple;
   }

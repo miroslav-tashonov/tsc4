@@ -20,9 +20,29 @@ int tlen(tuple t) asm "TLEN";
   tuple rowTuple = empty_tuple();
   
   int rA = matrixA.tlen();
+  if(rA == 0){
+    return empty_tuple();
+  }
+
   int cA = matrixA.at(0).tlen();
+  if(cA == 0){
+    return empty_tuple();
+  }
+
   int rB = matrixB.tlen();
+  if(rB == 0){
+    return empty_tuple();
+  }
+
   int cB = matrixB.at(0).tlen();
+  if(cB == 0){
+    return empty_tuple();
+  }
+
+  if(cA != rB)
+  {
+    return empty_tuple();
+  }
 
   int i = 0;
   int j = 0;
@@ -46,6 +66,6 @@ int tlen(tuple t) asm "TLEN";
     resultMatrix~tpush(rowTuple);
     i = i + 1;
   }
-  
+
   return resultMatrix;
 }
