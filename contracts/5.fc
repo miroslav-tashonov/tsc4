@@ -37,16 +37,21 @@
 (tuple) fibonacci_sequence (int n, int k) method_id {
   var fiboonacci_tuple = empty_tuple();
   if(k == 0){
-    fiboonacci_tuple~tpush(empty_tuple());
-    return fiboonacci_tuple;
+    return empty_tuple();
   }
   
   int iteration = 0;
   repeat(k) {
-     (int fibonacciNumber, _) = findNthFibonacciNumber(n + iteration);
-     fiboonacci_tuple~tpush(fibonacciNumber);
+    if(n + iteration <= 370)
+    {
+      if(k <= 255)
+      {
+        (int fibonacciNumber, _) = findNthFibonacciNumber(n + iteration);
+        fiboonacci_tuple~tpush(fibonacciNumber);
 
-     iteration += 1;
+        iteration += 1;
+      }
+    }
   }
   
  return  fiboonacci_tuple;
