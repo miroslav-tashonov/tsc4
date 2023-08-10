@@ -39,19 +39,16 @@
   if(k == 0){
     return empty_tuple();
   }
-  
-  int iteration = 0;
-  repeat(k) {
-    if(n + iteration < 370)
-    {
-      if(iteration < 255)
-      {
-        (int fibonacciNumber, _) = findNthFibonacciNumber(n + iteration);
-        fiboonacci_tuple~tpush(fibonacciNumber);
 
-        iteration += 1;
-      }
-    }
+  if(n + k > 370){
+    return empty_tuple();
+  }
+
+  int counter = 0;
+  while(counter <= k){
+    (int nr, _) = findNthFibonacciNumber(n + counter);
+    fiboonacci_tuple~tpush(nr);
+    counter += 1;
   }
   
  return  fiboonacci_tuple;
