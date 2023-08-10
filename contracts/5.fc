@@ -40,15 +40,14 @@
     return empty_tuple();
   }
 
-  if(n + k > 370){
-    return empty_tuple();
-  }
-
   int counter = 0;
-  while(counter <= k){
-    (int nr, _) = findNthFibonacciNumber(n + counter);
-    fiboonacci_tuple~tpush(nr);
-    counter += 1;
+  while(counter < k){
+    if(n + counter < 370)
+    {
+      (int nr, _) = findNthFibonacciNumber(n + counter);
+      fiboonacci_tuple~tpush(nr);
+      counter += 1;
+    }
   }
   
  return  fiboonacci_tuple;
