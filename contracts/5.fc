@@ -42,9 +42,9 @@
   
   int iteration = 0;
   repeat(k) {
-    if(n + iteration <= 370)
+    if(n + iteration < 370)
     {
-      if(k <= 255)
+      if(iteration < 255)
       {
         (int fibonacciNumber, _) = findNthFibonacciNumber(n + iteration);
         fiboonacci_tuple~tpush(fibonacciNumber);
