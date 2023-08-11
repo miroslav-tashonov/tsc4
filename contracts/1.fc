@@ -54,7 +54,7 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
 
 ;; testable
 (cell) find_branch_by_hash(int hash, cell tree) method_id {
-  if(result.is_null())
+  if(tree.is_null())
   {
     return begin_cell().end_cell();
   }
