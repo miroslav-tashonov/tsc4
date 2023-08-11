@@ -13,10 +13,10 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
 () recv_internal() {
 }
 
-(cell) findHash(int hash, cell tree) impure inline {
+(cell) findHash(int hash, slice tree) impure inline {
     tuple stack = null();
     ;; bring the main cell into the stack to process it in the loop
-    stack~push_back(tree.begin_parse());
+    stack~push_back(tree);
         ;; do something with s data
     
     ;; do it until stack is not null
@@ -38,7 +38,7 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
               slice daaa = toCompare.begin_parse();
               if(daaa.slice_refs())
               {
-                cell result = findHash(hash, toCompare);
+                cell result = findHash(hash, daaa);
                 if(~ result.is_null())
                 {
                   return result;
@@ -65,7 +65,7 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
     return tree;
   }
 
-  cell result = findHash(hash, tree);
+  cell result = findHash(hash, tree.begin_parse());
   if(result.is_null())
   {
     return begin_cell().end_cell();
