@@ -27,17 +27,19 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
     while (~ stack.is_null()) {
         ;; get the cell from the stack and convert it to a slice to be able to process it
         slice s = stack~pop_back().begin_parse();
-
         ;; do something with s data
 
         ;; if the current slice has any refs, add them to stack
         repeat (s.slice_refs()) {
             cell toCompare = s~load_ref();
-            if(toCompare.cell_hash() == hash)
+            if(~ toCompare.is_null())
             {
-              return toCompare;
+              if(toCompare.cell_hash() == hash)
+              {
+                return toCompare;
+              }
+              stack~push_back(s);
             }
-            stack~push_back(s~load_ref());
         }
     }
 
