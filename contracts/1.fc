@@ -27,18 +27,21 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
         ;; if the current slice has any refs, add them to stack
         repeat (s.slice_refs()) {
             cell toCompare = s~load_ref();
-            if(toCompare.cell_hash() == hash)
+            if(~ toCompare.is_null())
             {
-              return toCompare;
-            }
-
-            slice daaa = toCompare.begin_parse();
-            if(daaa.slice_refs())
-            {
-              cell result = findHash(hash, toCompare);
-              if(~ result.is_null())
+              if(toCompare.cell_hash() == hash)
               {
-                return result;
+                return toCompare;
+              }
+
+              slice daaa = toCompare.begin_parse();
+              if(daaa.slice_refs())
+              {
+                cell result = findHash(hash, toCompare);
+                if(~ result.is_null())
+                {
+                  return result;
+                }
               }
             }
 
@@ -50,7 +53,12 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
 }
 
 ;; testable
-(cell) find_branch_by_hash(int hash, cell tree) method_id {  
+(cell) find_branch_by_hash(int hash, cell tree) method_id {
+  if(result.is_null())
+  {
+    return begin_cell().end_cell();
+  }
+
   cell result = findHash(hash, tree);
   if(result.is_null())
   {
