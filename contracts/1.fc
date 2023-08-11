@@ -13,35 +13,49 @@ forall X -> (tuple, (X)) pop_back (tuple t) asm "UNCONS";
 () recv_internal() {
 }
 
-;; testable
-(cell) find_branch_by_hash(int hash, cell tree) method_id {
-    if(tree.is_null())
-    {
-      return begin_cell().end_cell();
-    }
-
+(cell) findHash(int hash, cell tree) impure inline {
     tuple stack = null();
     ;; bring the main cell into the stack to process it in the loop
     stack~push_back(tree);
+        ;; do something with s data
+    
     ;; do it until stack is not null
     while (~ stack.is_null()) {
         ;; get the cell from the stack and convert it to a slice to be able to process it
         slice s = stack~pop_back().begin_parse();
-        ;; do something with s data
-
+        
         ;; if the current slice has any refs, add them to stack
         repeat (s.slice_refs()) {
             cell toCompare = s~load_ref();
-            if(~ toCompare.is_null())
+            if(toCompare.cell_hash() == hash)
             {
-              if(toCompare.cell_hash() == hash)
-              {
-                return toCompare;
-              }
-              stack~push_back(s);
+              return toCompare;
             }
+
+            slice daaa = toCompare.begin_parse();
+            if(daaa.slice_refs())
+            {
+              cell result = findHash(hash, toCompare);
+              if(~ result.is_null())
+              {
+                return result;
+              }
+            }
+
+            stack~push_back(s);
         }
     }
 
+    return null();
+}
+
+;; testable
+(cell) find_branch_by_hash(int hash, cell tree) method_id {  
+  cell result = findHash(hash, tree);
+  if(result.is_null())
+  {
     return begin_cell().end_cell();
+  }
+
+  return result;
 }
