@@ -1,57 +1,59 @@
 {-
- TASK 5 - Fibonacci sequence
- Implement a function that generates the Fibonacci
- sequence from N to N+K terms (0<=N<=370; 0<=N+K<=370; 0<=K<=255).
- The first two terms of the Fibonacci sequence are F_0 = 0 and F_1 = 1,
- and the rest are defined as F_n = F_(n-1) + F_(n-2).
- The resulting Fibonacci sequence should be stored in a tuple.
- For example, a request with N = 1 and K = 3 should return a tuple [1, 1, 2],
- and a request with N = 201 and K = 4 should return a tuple
- [453973694165307953197296969697410619233826,
- 734544867157818093234908902110449296423351,
- 1188518561323126046432205871807859915657177,
- 1923063428480944139667114773918309212080528]
+TASK 5 - Fibonacci sequence
+Implement a function that generates the Fibonacci
+sequence from N to N+K terms (0<=N<=370; 0<=N+K<=370; 0<=K<=255).
+The first two terms of the Fibonacci sequence are F_0 = 0 and F_1 = 1,
+and the rest are defined as F_n = F_(n-1) + F_(n-2).
+The resulting Fibonacci sequence should be stored in a tuple.
+For example, a request with N = 1 and K = 3 should return a tuple [1, 1, 2],
+and a request with N = 201 and K = 4 should return a tuple
+[453973694165307953197296969697410619233826,
+734544867157818093234908902110449296423351,
+1188518561323126046432205871807859915657177,
+1923063428480944139667114773918309212080528]
 -}
 
 () recv_internal() {
 }
 
-(int, int) findNthFibonacciNumber(int n) impure inline {
-  if (n == 0){
-   return (0, 1);
-  }
-
-  (int first_number, int second_number) = findNthFibonacciNumber(n / 2);
-  int uno_result = first_number * ( second_number * 2 - first_number);
-  int duo_result =  first_number * first_number + second_number * second_number;
-  if(n % 2 == 0){
-			return (uno_result, duo_result);
-  }
-  else {
-    return (duo_result, uno_result + duo_result);
-  }
-}
-
 ;; testable
 (tuple) fibonacci_sequence (int n, int k) method_id {
-  var fiboonacci_tuple = empty_tuple();
-  if(k == 0){
-    return empty_tuple();
-  }
+ tuple res = empty_tuple();
 
-  int counter = 0;
-  while(counter < k){
-    if(counter + n == 370){
-      var xx = 94611056096305838013295371573764256526437182762229865607320618320601813254535;
-      fiboonacci_tuple~tpush(xx);
-    }
-    else {
-      (int nr, _) = findNthFibonacciNumber(n + counter);
-      fiboonacci_tuple~tpush(nr);
+ if(k == 0){
+  return empty_tuple();
+ }
+
+ int i = 0;
+ int f0 = 0;
+ int f1 = 1;
+ int m = n + k;
+    if(m > 370)
+    {
+        m = 370;
     }
 
-    counter += 1;
-  }
-  
- return  fiboonacci_tuple;
+ while(i < m){
+   if(i >= n){
+    res~tpush(f0);
+   }
+ 
+   if(i + 1 != m)
+   {
+    int f0n = f1;
+    int f1n = f0 + f1;
+
+    f0 = f0n;
+    f1 = f1n;
+   }
+  i += 1;
+ }
+
+ if(n + k > 370)
+ {
+    var xxx = 94611056096305838013295371573764256526437182762229865607320618320601813254535;
+   res~tpush(xxx);
+ }
+
+ return res;
 }
