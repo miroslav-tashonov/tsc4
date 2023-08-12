@@ -9,13 +9,101 @@
 () recv_internal() {
 }
 
+
+(cell) encode_string_to_int(slice text, int shift) impure inline {
+  int number = 0;
+  builder chars = begin_cell();
+
+  while (~ text.slice_empty?()) {
+      int char = text~load_uint(8);
+      if(char >= 65 & (char <= 90))
+      {
+        if(90 - char < shift)
+        {
+           chars~store_uint(65 + (shift - (90 - char)), 8); 
+        }
+        else
+        {
+          chars~store_uint(char + shift, 8);
+        }
+      }
+      elseif(char >= 97 & (char <= 122))
+      {
+        if(122 - char < shift)
+        {
+           chars~store_uint(97 + (shift - (122 - char)), 8); 
+        }
+        else
+        {
+          chars~store_uint(char + shift, 8); 
+        }
+      }
+      else
+      {
+        chars~store_uint(char, 8);
+      }
+  }
+
+  return chars.end_cell();
+}
+
+(cell) decode_string(slice text, int shift) impure inline {
+  int number = 0;
+  builder chars = begin_cell();
+
+  while (~ text.slice_empty?()) {
+      int char = text~load_uint(8);
+      if(char >= 65 & (char <= 90))
+      {
+        if(char - 65 < shift)
+        {
+           chars~store_uint(90 - (shift - (char - 65)), 8); 
+        }
+        else
+        {
+          chars~store_uint(char - shift, 8);
+        }
+      }
+      elseif(char >= 97 & (char <= 122))
+      {
+        if(char - 97 < shift)
+        {
+           chars~store_uint(122 - (shift - (char - 97)), 8); 
+        }
+        else
+        {
+          chars~store_uint(char - shift, 8);
+        }
+      }
+      else
+      {
+        chars~store_uint(char, 8);
+      }
+  }
+
+  return chars.end_cell();
+}
+
 ;; testable
 (cell) caesar_cipher_encrypt(int shift, cell text) method_id {
-  return begin_cell().end_cell();
+  slice s = text.begin_parse();
+  s~skip_bits(32);
+  if(shift > 25)
+  {
+    shift = shift % 26;
+  }
+
+  return encode_string_to_int(s, shift);
 }
 
 ;; testable
 (cell) caesar_cipher_decrypt(int shift, cell text) method_id {
-  return begin_cell().end_cell();
-}
+  slice s = text.begin_parse();
+  s~skip_bits(32);
+  if(shift > 25)
+  {
+    shift = shift % 26;
+  }
 
+  return decode_string(s, shift);
+}
