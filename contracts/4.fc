@@ -114,6 +114,7 @@
   shift = shift % 26;
   
   builder chars = begin_cell();
+  chars~store_uint(0, 32);
   chars = encode_string_to_int(s, shift, chars);
 
   repeat (s.slice_refs()) {
@@ -132,6 +133,7 @@
   throw_unless(212, op == 0);
   shift = shift % 26;
   builder chars = begin_cell();
+  chars~store_uint(0, 32);
   chars = decode_string(s, shift, chars);
 
   repeat (s.slice_refs()) {
