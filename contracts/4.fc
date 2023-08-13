@@ -118,22 +118,16 @@
 (cell) caesar_cipher_encrypt(int shift, cell text) method_id {
   slice s = text.begin_parse();
   s~skip_bits(32);
-  if(shift > 25)
-  {
-    shift = shift % 26;
-  }
-
-  return encode_string_to_int(s, shift);
+  shift = shift % 26;
+  
+return decode_string(s, shift);
 }
 
 ;; testable
 (cell) caesar_cipher_decrypt(int shift, cell text) method_id {
   slice s = text.begin_parse();
   s~skip_bits(32);
-  if(shift > 25)
-  {
-    shift = shift % 26;
-  }
+  shift = shift % 26;
 
-  return decode_string(s, shift);
+  return encode_string_to_int(s, shift);
 }
