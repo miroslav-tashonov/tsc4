@@ -13,6 +13,7 @@
 (cell) encode_string_to_int(slice text, int shift) impure inline {
   int number = 0;
   builder chars = begin_cell();
+  chars~store_uint(0, 32);
 
   while (~ text.slice_empty?()) {
       int char = text~load_uint(8);
@@ -64,6 +65,7 @@
 (cell) decode_string(slice text, int shift) impure inline {
   int number = 0;
   builder chars = begin_cell();
+  chars~store_uint(0, 32);
 
   while (~ text.slice_empty?()) {
       int char = text~load_uint(8);
