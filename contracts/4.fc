@@ -63,7 +63,7 @@ forall X -> int is_null (X x) asm "ISNULL";
 (builder) decode_string(slice text, int shift, builder chars) impure inline {
   while (~ text.slice_data_empty?()) {
       int char = text~load_uint(8);
-      if(char >= 65 & (char <= 90))
+      if(char >= 65)
       {
         if(char <= 90)
         {
