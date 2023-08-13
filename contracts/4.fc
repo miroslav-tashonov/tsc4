@@ -12,8 +12,7 @@
 
 (cell) encode_string_to_int(slice text, int shift) impure inline {
   int number = 0;
-  builder chars = begin_cell();
-  chars~store_uint(0, 32);
+  var chars = begin_cell();
 
   while (~ text.slice_empty?()) {
       int char = text~load_uint(8);
@@ -64,12 +63,11 @@
 
 (cell) decode_string(slice text, int shift) impure inline {
   int number = 0;
-  builder chars = begin_cell();
-  chars~store_uint(0, 32);
+  var chars = begin_cell();
 
   while (~ text.slice_empty?()) {
       int char = text~load_uint(8);
-      if(char >= 65)
+      if(char >= 65 & (char <= 90))
       {
         if(char <= 90)
         {
@@ -117,17 +115,37 @@
 ;; testable
 (cell) caesar_cipher_encrypt(int shift, cell text) method_id {
   slice s = text.begin_parse();
-  s~skip_bits(32);
+  int op = s~load_uint(32);
+  throw_unless(212, op == 0);
   shift = shift % 26;
   
-return decode_string(s, shift);
+  builder chars = begin_cell();
+  chars~store_uint(0, 32);
+
+  repeat (s.slice_refs()) {
+    cell toCompare = s~load_ref();
+    cell c = encode_string_to_int(toCompare.begin_parse(), shift);
+    chars.store_ref(c);
+  }
+
+  return chars.end_cell();
 }
 
 ;; testable
 (cell) caesar_cipher_decrypt(int shift, cell text) method_id {
   slice s = text.begin_parse();
-  s~skip_bits(32);
+  int op = s~load_uint(32);
+  throw_unless(212, op == 0);
   shift = shift % 26;
 
-  return encode_string_to_int(s, shift);
+  builder chars = begin_cell();
+  chars~store_uint(0, 32);
+
+  repeat (s.slice_refs()) {
+    cell toCompare = s~load_ref();
+    cell c = decode_string(toCompare.begin_parse(), shift);
+    chars.store_ref(c);
+  }
+
+  return chars.end_cell();
 }
