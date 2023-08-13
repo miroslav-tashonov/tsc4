@@ -118,7 +118,6 @@
   shift = shift % 26;
   
   builder chars = begin_cell();
-  chars~store_uint(0, 32);
 
   repeat (s.slice_refs()) {
     cell toCompare = s~load_ref();
@@ -141,7 +140,6 @@
   shift = shift % 26;
 
   builder chars = begin_cell();
-  chars~store_uint(0, 32);
 
   repeat (s.slice_refs()) {
     cell toCompare = s~load_ref();
