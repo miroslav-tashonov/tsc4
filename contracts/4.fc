@@ -16,26 +16,40 @@
 
   while (~ text.slice_empty?()) {
       int char = text~load_uint(8);
-      if(char >= 65 & (char <= 90))
+      if(char >= 65)
       {
-        if(90 - char < shift)
+        if(char <= 90)
         {
-           chars~store_uint(65 + (shift - (90 - char)), 8); 
+          if(90 - char < shift)
+          {
+            chars~store_uint(65 + (shift - (90 - char)), 8); 
+          }
+          else
+          {
+            chars~store_uint(char + shift, 8);
+          }
+        }
+        elseif(char >= 97)
+        {
+          if(char <= 122)
+          {
+            if(122 - char < shift)
+            {
+              chars~store_uint(97 + (shift - (122 - char)), 8); 
+            }
+            else
+            {
+              chars~store_uint(char + shift, 8); 
+            }
+          }
+          else
+          {
+            chars~store_uint(char, 8);
+          }
         }
         else
         {
-          chars~store_uint(char + shift, 8);
-        }
-      }
-      elseif(char >= 97 & (char <= 122))
-      {
-        if(122 - char < shift)
-        {
-           chars~store_uint(97 + (shift - (122 - char)), 8); 
-        }
-        else
-        {
-          chars~store_uint(char + shift, 8); 
+          chars~store_uint(char, 8);
         }
       }
       else
@@ -55,24 +69,38 @@
       int char = text~load_uint(8);
       if(char >= 65 & (char <= 90))
       {
-        if(char - 65 < shift)
+        if(char <= 90)
         {
-           chars~store_uint(90 - (shift - (char - 65)), 8); 
+          if(char - 65 < shift)
+          {
+            chars~store_uint(90 - (shift - (char - 65)), 8); 
+          }
+          else
+          {
+            chars~store_uint(char - shift, 8);
+          }
+        }
+        elseif(char >= 97)
+        {
+          if(char <= 122)
+          {
+            if(char - 97 < shift)
+            {
+              chars~store_uint(122 - (shift - (char - 97)), 8); 
+            }
+            else
+            {
+              chars~store_uint(char - shift, 8);
+            }
+          }
+          else
+          {
+            chars~store_uint(char, 8);
+          }
         }
         else
         {
-          chars~store_uint(char - shift, 8);
-        }
-      }
-      elseif(char >= 97 & (char <= 122))
-      {
-        if(char - 97 < shift)
-        {
-           chars~store_uint(122 - (shift - (char - 97)), 8); 
-        }
-        else
-        {
-          chars~store_uint(char - shift, 8);
+          chars~store_uint(char, 8);
         }
       }
       else
