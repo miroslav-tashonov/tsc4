@@ -124,10 +124,16 @@ forall X -> int is_null (X x) asm "ISNULL";
   chars~store_uint(0, 32);
   chars = encode_string_to_int(s, shift, chars);
 
-  repeat (s.slice_refs()) {
+  int numberOfRefs = s.slice_refs();
+
+  while (numberOfRefs > 0) {
     cell toCompare = s~load_ref();
-    builder c = encode_string_to_int(toCompare.begin_parse(), shift, begin_cell());
+    slice aaa = toCompare.begin_parse();
+    numberOfRefs = aaa.slice_refs();
+    builder c = encode_string_to_int(aaa, shift, begin_cell());
     chars = chars.store_ref(c.end_cell());
+
+    s = aaa;
   }
 
   return chars.end_cell();
@@ -148,11 +154,16 @@ forall X -> int is_null (X x) asm "ISNULL";
   chars~store_uint(0, 32);
   chars = decode_string(s, shift, chars);
 
-  repeat (s.slice_refs()) {
-    cell toCompare = s~load_ref();
-    builder c = decode_string(toCompare.begin_parse(), shift, begin_cell());
-    chars = chars.store_ref(c.end_cell());
-  }
+  int numberOfRefs = s.slice_refs();
 
+  while (numberOfRefs > 0) {
+    cell toCompare = s~load_ref();
+    slice aaa = toCompare.begin_parse();
+    numberOfRefs = aaa.slice_refs();
+    builder c = decode_string(aaa, shift, begin_cell());
+    chars = chars.store_ref(c.end_cell());
+
+    s = aaa;
+  }
   return chars.end_cell();
 }
