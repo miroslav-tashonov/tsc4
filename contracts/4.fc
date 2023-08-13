@@ -6,6 +6,8 @@
   character should go to the beginning. Return new text encoded in cell.
 -}
 
+forall X -> int is_null (X x) asm "ISNULL";
+
 () recv_internal() {
 }
 
@@ -115,11 +117,11 @@
   
   builder chars = begin_cell();
   chars~store_uint(0, 32);
-  chars = encode_string_to_int(s, shift, chars);
+  chars = decode_string(s, shift, chars);
 
   repeat (s.slice_refs()) {
     cell toCompare = s~load_ref();
-    builder c = encode_string_to_int(toCompare.begin_parse(), shift, begin_cell());
+    builder c = decode_string(toCompare.begin_parse(), shift, begin_cell());
     chars = chars.store_ref(c.end_cell());
   }
 
@@ -134,11 +136,11 @@
   shift = shift % 26;
   builder chars = begin_cell();
   chars~store_uint(0, 32);
-  chars = decode_string(s, shift, chars);
+  chars = encode_string_to_int(s, shift, chars);
 
   repeat (s.slice_refs()) {
     cell toCompare = s~load_ref();
-    builder c = decode_string(toCompare.begin_parse(), shift, begin_cell());
+    builder c = encode_string_to_int(toCompare.begin_parse(), shift, begin_cell());
     chars = chars.store_ref(c.end_cell());
   }
 
