@@ -8,6 +8,7 @@
 
 forall X -> int is_null (X x) asm "ISNULL";
 int tlen(tuple t) asm "TLEN";
+builder store_slice_normal(builder b, slice s) asm(s b) "STSLICE";
 
 () recv_internal() {
 }
@@ -128,7 +129,7 @@ int tlen(tuple t) asm "TLEN";
     }
   }
 
-  return begin_cell().store_slice(s).end_cell();
+  return begin_cell().store_slice_normal(s).end_cell();
 }
 
   (cell) retrieveRefDecode(int numberOfRefs, int shift, slice s) impure inline {
@@ -150,7 +151,7 @@ int tlen(tuple t) asm "TLEN";
     }
   }
 
-  return begin_cell().store_slice(s).end_cell();
+  return begin_cell().store_slice_normal(s).end_cell();
 }
 
 ;; testable
