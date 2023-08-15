@@ -12,7 +12,6 @@ int tlen(tuple t) asm "TLEN";
 () recv_internal() {
 }
 
-
 (builder) encode_string_to_int(slice text, int shift, builder chars) impure inline {
   while (~ text.slice_data_empty?()) {
       int char = text~load_uint(8);
@@ -109,6 +108,51 @@ int tlen(tuple t) asm "TLEN";
   return chars;
 }
 
+
+
+(cell) retrieveRefEncode(int numberOfRefs, int shift, slice s) impure inline {
+  while (numberOfRefs > 0) {
+    cell toCompare = s~load_ref();
+    slice aaa = toCompare.begin_parse();
+    numberOfRefs = aaa.slice_refs();
+    builder c = encode_string_to_int(aaa, shift, begin_cell());
+    var initCell = begin_cell().store_builder(c).end_cell();
+    if(numberOfRefs > 0)
+    {
+      var cc = retrieveRefEncode(numberOfRefs, shift, aaa);
+      return begin_cell().store_builder(c).store_ref(cc).end_cell();
+    }
+    else
+    {
+      return begin_cell().store_builder(c).end_cell();
+    }
+  }
+
+  return begin_cell().store_slice(s).end_cell();
+}
+
+  (cell) retrieveRefDecode(int numberOfRefs, int shift, slice s) impure inline {
+  while (numberOfRefs > 0) {
+    cell toCompare = s~load_ref();
+    slice aaa = toCompare.begin_parse();
+    numberOfRefs = aaa.slice_refs();
+    builder c = decode_string(aaa, shift, begin_cell());
+    var initCell = begin_cell().store_builder(c).end_cell();
+    
+    if(numberOfRefs > 0)
+    {
+      var cc = retrieveRefDecode(numberOfRefs, shift, aaa);
+      return begin_cell().store_builder(c).store_ref(cc).end_cell();
+    }
+    else
+    {
+      return begin_cell().store_builder(c).end_cell();
+    }
+  }
+
+  return begin_cell().store_slice(s).end_cell();
+}
+
 ;; testable
 (cell) caesar_cipher_encrypt(int shift, cell text) method_id {
   if(text.is_null())
@@ -116,51 +160,33 @@ int tlen(tuple t) asm "TLEN";
     return begin_cell().end_cell();
   }
 
-  slice s = text.begin_parse();
-  int op = s~load_uint(32);
-  throw_unless(212, op == 0);
   shift = shift % 26;
-
   if(shift == 0)
   {
     return text;
   }
+
+  slice s = text.begin_parse();
+  (_, int size, _) = s.slice_compute_data_size(1040000);
+  if (size < 40)
+  {
+    return begin_cell().end_cell();
+  }
+
+  int op = s~load_uint(32);
+  throw_unless(212, op == 0);
   
   builder chars = begin_cell();
   chars~store_uint(0, 32);
   chars = encode_string_to_int(s, shift, chars);
 
   int numberOfRefs = s.slice_refs();
-  tuple refs = empty_tuple();
-
-  while (numberOfRefs > 0) {
-    cell toCompare = s~load_ref();
-    slice aaa = toCompare.begin_parse();
-    numberOfRefs = aaa.slice_refs();
-    builder c = encode_string_to_int(aaa, shift, begin_cell());
-    refs~tpush(c);
-    
-    s = aaa;
-  }
-
-   int len = refs.tlen();
-  if(len > 0)
+  if(numberOfRefs > 0)
   {
-    int i = len - 1;
-    builder x = refs.at(i);
-    cell tempCell = begin_cell().store_builder(x).end_cell();
-    i -= 1;
-    while (i >= 0) {
-        x = refs.at(i);
-        var dadaCell = begin_cell().store_builder(x).store_ref(tempCell).end_cell();
-        tempCell = dadaCell;
-
-        i = i - 1;
-    }
-
-    chars = chars.store_ref(tempCell);
+    cell retro = retrieveRefEncode(numberOfRefs, shift, s);
+    chars = chars.store_ref(retro);
   }
-
+  
   return chars.end_cell();
 }
 
@@ -171,50 +197,32 @@ int tlen(tuple t) asm "TLEN";
     return begin_cell().end_cell();
   }
 
-  slice s = text.begin_parse();
-  int op = s~load_uint(32);
-  throw_unless(212, op == 0);
   shift = shift % 26;
-  
   if(shift == 0)
   {
     return text;
   }
+
+  slice s = text.begin_parse();
+  (_, int size, _) = s.slice_compute_data_size(1040000);
+  if (size < 40)
+  {
+    return begin_cell().end_cell();
+  }
+
+
+  int op = s~load_uint(32);
+  throw_unless(212, op == 0);
 
   builder chars = begin_cell();
   chars~store_uint(0, 32);
   chars = decode_string(s, shift, chars);
 
   int numberOfRefs = s.slice_refs();
-  tuple refs = empty_tuple();
-
-  while (numberOfRefs > 0) {
-    cell toCompare = s~load_ref();
-    slice aaa = toCompare.begin_parse();
-    numberOfRefs = aaa.slice_refs();
-    builder c = decode_string(aaa, shift, begin_cell());
-    refs~tpush(c);
-    
-    s = aaa;
-  }
-   
-
-   int len = refs.tlen();
-  if(len > 0)
+  if(numberOfRefs > 0)
   {
-    int i = len - 1;
-    builder x = refs.at(i);
-    cell tempCell = begin_cell().store_builder(x).end_cell();
-    i -= 1;
-    while (i >= 0) {
-        x = refs.at(i);
-        var dadaCell = begin_cell().store_builder(x).store_ref(tempCell).end_cell();
-        tempCell = dadaCell;
-
-        i = i - 1;
-    }
-
-    chars = chars.store_ref(tempCell);
+    cell retro = retrieveRefDecode(numberOfRefs, shift, s);
+    chars = chars.store_ref(retro);
   }
 
   return chars.end_cell();
